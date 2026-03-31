@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import rateLimit from "express-rate-limit";
 import { connectDB } from "./db.js";
 import authRouter from "./routes/auth.js";
 import eventsRouter from "./routes/events.js";
@@ -21,12 +22,30 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Rate limiting – auth routes (strict)
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: "Too many requests, please try again later." },
+});
+
+// Rate limiting – general API
+const generalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 200,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: "Too many requests, please try again later." },
+});
+
 // Routes
-app.use("/api/auth", authRouter);
-app.use("/api/events", eventsRouter);
-app.use("/api/announcements", announcementsRouter);
-app.use("/api/registrations", registrationsRouter);
-app.use("/api/volunteer-hours", volunteerHoursRouter);
+app.use("/api/auth", authLimiter, authRouter);
+app.use("/api/events", generalLimiter, eventsRouter);
+app.use("/api/announcements", generalLimiter, announcementsRouter);
+app.use("/api/registrations", generalLimiter, registrationsRouter);
+app.use("/api/volunteer-hours", generalLimiter, volunteerHoursRouter);
 
 // Test route
 app.get("/api/test", (req, res) => {

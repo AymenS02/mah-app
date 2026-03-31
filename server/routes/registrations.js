@@ -1,5 +1,6 @@
 // server/routes/registrations.js
 import express from "express";
+import mongoose from "mongoose";
 import { Registration } from "../models/Registration.js";
 import { Event } from "../models/Event.js";
 import { authenticate, requireAdmin } from "../middleware/auth.js";
@@ -13,13 +14,19 @@ router.post("/", authenticate, async (req, res) => {
     if (!eventId) {
       return res.status(400).json({ error: "eventId is required" });
     }
+    if (!mongoose.Types.ObjectId.isValid(eventId)) {
+      return res.status(400).json({ error: "Invalid eventId" });
+    }
 
     const event = await Event.findById(eventId);
     if (!event) {
       return res.status(404).json({ error: "Event not found" });
     }
 
-    const existing = await Registration.findOne({ userId: req.user.id, eventId });
+    const existing = await Registration.findOne({
+      userId: req.user.id,
+      eventId: new mongoose.Types.ObjectId(eventId),
+    });
     if (existing) {
       return res.status(409).json({ error: "Already registered for this event" });
     }
