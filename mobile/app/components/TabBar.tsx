@@ -68,23 +68,28 @@ const styles = StyleSheet.create({
   tabbar: {
     flexDirection: 'row',
     position: 'absolute',
-    bottom: 50,
-    justifyContent: 'space-around',
+    bottom: 30,
+
+    width: '90%',              // responsive width
+    alignSelf: 'center',       // center horizontally
+
+    justifyContent: 'space-between', // clean spacing between items
     alignItems: 'center',
+
     backgroundColor: '#fff',
-    marginHorizontal: 80,
     paddingVertical: 15,
+    paddingHorizontal: 20,     // add inner spacing
+
     borderRadius: 35,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
+
+    boxShadow: '0px 10px 10px rgba(0,0,0,0.1)',
   },
 
   tabbarItem: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 5,
   },
 });
+
+export default TabBar;

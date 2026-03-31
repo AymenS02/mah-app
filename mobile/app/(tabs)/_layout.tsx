@@ -10,7 +10,6 @@ export default function TabLayout() {
       <Tabs.Screen name='events' options={{ title: "Events" }} />
       <Tabs.Screen name='volunteering' options={{ title: "Volunteering" }} />
       <Tabs.Screen name='account' options={{ title: "Account" }} />
-
     </Tabs>
   );
 }
